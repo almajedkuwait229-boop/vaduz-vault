@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VADUZ VAULT | Secure Compliance</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #05070a; }
+        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .vault-box { border: 2px solid var(--gold); padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; background: rgba(212, 175, 55, 0.05); }
+        h1 { letter-spacing: 5px; color: var(--gold); font-size: 1.5rem; }
+        .status { color: #00ff00; font-size: 10px; margin-bottom: 20px; text-transform: uppercase; }
+        .price-display { font-size: 2.5rem; font-weight: bold; margin: 20px 0; border-y: 1px solid #333; padding: 20px 0; }
+        .btn { background: var(--gold); color: black; padding: 18px; border-radius: 10px; text-decoration: none; display: block; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="vault-box">
+        <h1>VADUZ VAULT</h1>
+        <div class="status">● System Secure | 2026 CARF Ready</div>
+        <div style="color: #888; font-size: 12px;">LIVE MARKET RATE (CHF)</div>
+        <div id="price">SYNCING...</div>
+        <a href="#" class="btn" onclick="alert('CARF Report Generation Initialized')">ACCESS TAX RECORDS</a>
+    </div>
+
+    <script>
+        // This is the "Brain" - It connects directly to the market.
+        async function updatePrice() {
+            try {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                const data = await response = await res.json();
+                const chfPrice = (parseFloat(data.price) * 0.89).toLocaleString('de-LI', { style: 'currency', currency: 'CHF' });
+                document.getElementById('price').innerText = chfPrice;
+            } catch (e) {
+                document.getElementById('price').innerText = "OFFLINE MODE";
+            }
+        }
+        updatePrice();
+        setInterval(updatePrice, 5000); // Check every 5 seconds
+    </script>
+</body>
+</html>
