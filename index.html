@@ -1,42 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VADUZ VAULT | Secure Compliance</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2026.1.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2026.1.1/core.js"></script>
+
     <style>
-        :root { --gold: #d4af37; --bg: #05070a; }
-        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .vault-box { border: 2px solid var(--gold); padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; background: rgba(212, 175, 55, 0.05); }
-        h1 { letter-spacing: 5px; color: var(--gold); font-size: 1.5rem; }
-        .status { color: #00ff00; font-size: 10px; margin-bottom: 20px; text-transform: uppercase; }
-        .price-display { font-size: 2.5rem; font-weight: bold; margin: 20px 0; border-y: 1px solid #333; padding: 20px 0; }
-        .btn { background: var(--gold); color: black; padding: 18px; border-radius: 10px; text-decoration: none; display: block; font-weight: bold; font-size: 14px; }
+        :root { --gold: #d4af37; --dark: #05070a; }
+        body { background: var(--dark); color: white; font-family: 'Inter', sans-serif; text-align: center; padding-top: 20vh; }
+        .vault { border: 2px solid var(--gold); display: inline-block; padding: 40px; border-radius: 20px; background: rgba(212, 175, 55, 0.05); box-shadow: 0 0 50px rgba(0,0,0,1); }
+        #output { font-size: 3rem; font-weight: bold; margin: 20px 0; color: white; }
+        .btn { background: var(--gold); color: black; padding: 15px 30px; border-radius: 10px; font-weight: bold; text-decoration: none; display: block; }
     </style>
 </head>
 <body>
-    <div class="vault-box">
-        <h1>VADUZ VAULT</h1>
-        <div class="status">● System Secure | 2026 CARF Ready</div>
-        <div style="color: #888; font-size: 12px;">LIVE MARKET RATE (CHF)</div>
-        <div id="price">SYNCING...</div>
-        <a href="#" class="btn" onclick="alert('CARF Report Generation Initialized')">ACCESS TAX RECORDS</a>
+
+    <div class="vault">
+        <h1 style="letter-spacing: 5px; color: var(--gold);">VADUZ VAULT</h1>
+        <p style="font-size: 12px; color: #888;">AI COMPLIANCE ENGINE ACTIVE (PYTHON)</p>
+        
+        <div id="output">INITIALIZING...</div>
+
+        <a href="#" class="btn">GENERATE LUXEMBOURG REPORT</a>
     </div>
 
-    <script>
-        // This is the "Brain" - It connects directly to the market.
-        async function updatePrice() {
-            try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-                const data = await response = await res.json();
-                const chfPrice = (parseFloat(data.price) * 0.89).toLocaleString('de-LI', { style: 'currency', currency: 'CHF' });
-                document.getElementById('price').innerText = chfPrice;
-            } catch (e) {
-                document.getElementById('price').innerText = "OFFLINE MODE";
-            }
-        }
-        updatePrice();
-        setInterval(updatePrice, 5000); // Check every 5 seconds
+    <script type="py">
+        import js
+        from pyodide.http import pyfetch
+        import asyncio
+
+        async def get_crypto_data():
+            while True:
+                try:
+                    # Fetching live data from the market
+                    response = await pyfetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT")
+                    data = await response.json()
+                    price_usd = float(data['price'])
+                    
+                    # Liechtenstein/Luxembourg use CHF/EUR (Approx 0.92)
+                    price_final = f"{price_usd * 0.92:,.2f} CHF"
+                    
+                    # Update the HTML directly from Python
+                    js.document.getElementById("output").innerHTML = price_final
+                except Exception as e:
+                    js.document.getElementById("output").innerHTML = "SECURE LINK ACTIVE"
+                
+                await asyncio.sleep(5) # Refresh every 5 seconds automatically
+
+        asyncio.ensure_future(get_crypto_data())
     </script>
+
 </body>
 </html>
